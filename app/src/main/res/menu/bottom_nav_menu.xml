@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/donation"
+        android:icon="@drawable/ic_donation"
+        android:title="@string/title_donation" />
+
+    <item
+        android:id="@+id/badges"
+        android:icon="@drawable/ic_badges"
+        android:title="@string/title_badges" />
+
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/ic_map"
+        android:title="@string/title_map" />
+
+    <item
+        android:id="@+id/more"
+        android:icon="@drawable/ic_others"
+        android:title="@string/title_more" />
+
+</menu>
