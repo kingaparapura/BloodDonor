@@ -1,6 +1,5 @@
 package org.example.blooddonor.ui.map;
 
-import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import org.example.blooddonor.R;
 import java.util.ArrayList;
 
 
+
 public class MapFragment extends Fragment {
 
     private MapViewModel notificationsViewModel;
@@ -32,29 +32,33 @@ public class MapFragment extends Fragment {
             new LatLng(49, 14), new LatLng(55,24));
 
 
-   private ArrayList<LatLng> markersList = new ArrayList<LatLng>(); {
-        markersList.add(new LatLng(52.232678,21.059987));
-        markersList.add(new LatLng(52.404247,16.883133));
-        markersList.add(new LatLng(53.125688,23.162624));
-        markersList.add(new LatLng(53.126038,18.011930));
-        markersList.add(new LatLng(54.365722,18.629010));
-        markersList.add(new LatLng(51.770119,18.103634));
-        markersList.add(new LatLng(50.255620,19.006320));
-        markersList.add(new LatLng(50.873227,20.605351));
-        markersList.add(new LatLng(50.056117,19.956267));
-        markersList.add(new LatLng(51.248662,22.556440));
-        markersList.add(new LatLng(51.782186,19.461452));
-        markersList.add(new LatLng(53.793478,20.489954));
-        markersList.add(new LatLng(50.670514,17.939014));
-        markersList.add(new LatLng(50.087913,18.220049));
-        markersList.add(new LatLng(51.397961,21.137523));
-        markersList.add(new LatLng(50.033482,22.015322));
-        markersList.add(new LatLng(54.469761,17.032590));
-        markersList.add(new LatLng(53.436678,14.536697));
-        markersList.add(new LatLng(50.774142,16.274951));
-        markersList.add(new LatLng(51.115978,17.065825));
-        markersList.add(new LatLng(51.940513,15.518990));
+   private ArrayList<MarkerData> markersList = new ArrayList<MarkerData>(); {
+        markersList.add(new MarkerData(new LatLng(52.232678,21.059987),
+                "RCKiK Warszawa ul. Saska 63/75", "pon. - pt. 7.00 - 17.00; sb. 7.00 - 14.00"));
+        markersList.add(new MarkerData(new LatLng(52.404247,16.883133),
+                "RCKiK Poznań ul. Marcelińska 44", "pn., wt., pt.: 7.00 - 15.00; "  +
+                "śr, czw.: 7:00 - 18:00, sb.: 7.00 - 13.00"));
+//        markersList.add(new LatLng(53.125688,23.162624));
+//        markersList.add(new LatLng(53.126038,18.011930));
+//        markersList.add(new LatLng(54.365722,18.629010));
+//        markersList.add(new LatLng(51.770119,18.103634));
+//        markersList.add(new LatLng(50.255620,19.006320));
+//        markersList.add(new LatLng(50.873227,20.605351));
+//        markersList.add(new LatLng(50.056117,19.956267));
+//        markersList.add(new LatLng(51.248662,22.556440));
+//        markersList.add(new LatLng(51.782186,19.461452));
+//        markersList.add(new LatLng(53.793478,20.489954));
+//        markersList.add(new LatLng(50.670514,17.939014));
+//        markersList.add(new LatLng(50.087913,18.220049));
+//        markersList.add(new LatLng(51.397961,21.137523));
+//        markersList.add(new LatLng(50.033482,22.015322));
+//        markersList.add(new LatLng(54.469761,17.032590));
+//        markersList.add(new LatLng(53.436678,14.536697));
+//        markersList.add(new LatLng(50.774142,16.274951));
+//        markersList.add(new LatLng(51.115978,17.065825));
+//        markersList.add(new LatLng(51.940513,15.518990));
 }
+
 
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -88,12 +92,18 @@ public class MapFragment extends Fragment {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(POLAND, 0));
 
                 for (int i=0; i < markersList.size(); i++) {
-                    googleMap.addMarker(new MarkerOptions().position(markersList.get(i)));
+                    MarkerData data = markersList.get(i);
+
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(data.latlng)
+                            .title(data.title)
+                            .snippet(data.snippet)
+                    );
                 }
             }
         });
-        return root;
 
+        return root;
     }
 
     @Override
