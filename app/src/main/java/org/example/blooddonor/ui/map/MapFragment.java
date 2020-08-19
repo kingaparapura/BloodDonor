@@ -1,5 +1,6 @@
 package org.example.blooddonor.ui.map;
 
+import android.icu.text.BidiRun;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import org.example.blooddonor.R;
 
@@ -33,30 +36,20 @@ public class MapFragment extends Fragment {
 
 
    private ArrayList<MarkerData> markersList = new ArrayList<MarkerData>(); {
-        markersList.add(new MarkerData(new LatLng(52.232678,21.059987),
-                "RCKiK Warszawa ul. Saska 63/75", "pon. - pt. 7.00 - 17.00; sb. 7.00 - 14.00"));
-        markersList.add(new MarkerData(new LatLng(52.404247,16.883133),
-                "RCKiK Poznań ul. Marcelińska 44", "pn., wt., pt.: 7.00 - 15.00; "  +
-                "śr, czw.: 7:00 - 18:00, sb.: 7.00 - 13.00"));
-//        markersList.add(new LatLng(53.125688,23.162624));
-//        markersList.add(new LatLng(53.126038,18.011930));
-//        markersList.add(new LatLng(54.365722,18.629010));
-//        markersList.add(new LatLng(51.770119,18.103634));
-//        markersList.add(new LatLng(50.255620,19.006320));
-//        markersList.add(new LatLng(50.873227,20.605351));
-//        markersList.add(new LatLng(50.056117,19.956267));
-//        markersList.add(new LatLng(51.248662,22.556440));
-//        markersList.add(new LatLng(51.782186,19.461452));
-//        markersList.add(new LatLng(53.793478,20.489954));
-//        markersList.add(new LatLng(50.670514,17.939014));
-//        markersList.add(new LatLng(50.087913,18.220049));
-//        markersList.add(new LatLng(51.397961,21.137523));
-//        markersList.add(new LatLng(50.033482,22.015322));
-//        markersList.add(new LatLng(54.469761,17.032590));
-//        markersList.add(new LatLng(53.436678,14.536697));
-//        markersList.add(new LatLng(50.774142,16.274951));
-//        markersList.add(new LatLng(51.115978,17.065825));
-//        markersList.add(new LatLng(51.940513,15.518990));
+        markersList.add(new MarkerData(new LatLng(52.232731,21.059892),
+                "RCKiK Warszawa ul. Saska 63/75", "pon. - pt.: 7.00 - 17.00;\nsb.: 7.00 - 14.00"));
+        markersList.add(new MarkerData(new LatLng(52.404270,16.883075),
+                "RCKiK Poznań ul. Marcelińska 44", "pon., wt., pt.: 7.00 - 15.00;"  +
+                "\nśr, czw.: 7:00 - 18:00;\nsb.: 7.00 - 13.00"));
+        markersList.add(new MarkerData(new LatLng(52.287080, 20.950844),
+                "Szpital Bielański ul. Cegłowska 80", "pon.,śr. - pt.: 7.00 - 13.00;" +
+                "\nwt.: 11.00 - 16.00;\nsb.: 7.00 - 12.00(wg harmonogramu)",
+                BitmapDescriptorFactory.HUE_VIOLET));
+        markersList.add(new MarkerData(new LatLng(52.226204, 21.000898),
+                 "Szpital Kliniczny ul. Nowogrodzka 59", "pon. - pt.: 7.00 - 13.00",
+                BitmapDescriptorFactory.HUE_VIOLET));
+
+
 }
 
 
@@ -90,16 +83,22 @@ public class MapFragment extends Fragment {
                 googleMap.getUiSettings().setScrollGesturesEnabled(true);
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(POLAND, 0));
+                googleMap.setInfoWindowAdapter(new InfoWindowCustom(getContext()));
+
+                Gson gson = new Gson();
 
                 for (int i=0; i < markersList.size(); i++) {
                     MarkerData data = markersList.get(i);
+                    String markerDataString = gson.toJson(data);
 
                     googleMap.addMarker(new MarkerOptions()
                             .position(data.latlng)
                             .title(data.title)
-                            .snippet(data.snippet)
+                            .snippet(markerDataString)
+                            .icon(BitmapDescriptorFactory.defaultMarker(data.color))
                     );
                 }
+
             }
         });
 
