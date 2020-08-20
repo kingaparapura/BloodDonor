@@ -1,5 +1,6 @@
 package org.example.blooddonor.ui.map;
 
+import android.content.Context;
 import android.icu.text.BidiRun;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.collections.MarkerManager;
 
 import org.example.blooddonor.R;
 
@@ -26,30 +30,30 @@ import java.util.ArrayList;
 
 
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment  {
 
     private MapViewModel notificationsViewModel;
     private GoogleMap googleMap;
     MapView mMapView;
     private LatLngBounds POLAND = new LatLngBounds(
             new LatLng(49, 14), new LatLng(55,24));
+    private ClusterManager<MarkerData> mClusterManager;
+
 
 
    private ArrayList<MarkerData> markersList = new ArrayList<MarkerData>(); {
         markersList.add(new MarkerData(new LatLng(52.232731,21.059892),
-                "RCKiK Warszawa ul. Saska 63/75", "pon. - pt.: 7.00 - 17.00;\nsb.: 7.00 - 14.00"));
+                "RCKiK Warszawa ul. Saska 63/75", "pon. - pt.: 7.00 - 17.00;\nsb.: 7.00 - 14.00",
+                BitmapDescriptorFactory.HUE_RED));
         markersList.add(new MarkerData(new LatLng(52.404270,16.883075),
                 "RCKiK Poznań ul. Marcelińska 44", "pon., wt., pt.: 7.00 - 15.00;"  +
-                "\nśr, czw.: 7:00 - 18:00;\nsb.: 7.00 - 13.00"));
+                "\nśr, czw.: 7:00 - 18:00;\nsb.: 7.00 - 13.00", BitmapDescriptorFactory.HUE_RED));
         markersList.add(new MarkerData(new LatLng(52.287080, 20.950844),
                 "Szpital Bielański ul. Cegłowska 80", "pon.,śr. - pt.: 7.00 - 13.00;" +
-                "\nwt.: 11.00 - 16.00;\nsb.: 7.00 - 12.00(wg harmonogramu)",
-                BitmapDescriptorFactory.HUE_VIOLET));
+                "\nwt.: 11.00 - 16.00;\nsb.: 7.00 - 12.00(wg harmonogramu)", BitmapDescriptorFactory.HUE_YELLOW));
         markersList.add(new MarkerData(new LatLng(52.226204, 21.000898),
                  "Szpital Kliniczny ul. Nowogrodzka 59", "pon. - pt.: 7.00 - 13.00",
-                BitmapDescriptorFactory.HUE_VIOLET));
-
-
+                BitmapDescriptorFactory.HUE_YELLOW));
 }
 
 
@@ -79,29 +83,23 @@ public class MapFragment extends Fragment {
                 googleMap.setMyLocationEnabled(true);
                 googleMap.getUiSettings().setCompassEnabled(true);
                 googleMap.getUiSettings().setZoomGesturesEnabled(true);
-                googleMap.getUiSettings().isScrollGesturesEnabled();
                 googleMap.getUiSettings().setScrollGesturesEnabled(true);
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(POLAND, 0));
-                googleMap.setInfoWindowAdapter(new InfoWindowCustom(getContext()));
+                mClusterManager = new ClusterManager<>(getContext(), mMap);
+                googleMap.setOnCameraIdleListener(mClusterManager);
 
-                Gson gson = new Gson();
+                final CustomClusterRenderer renderer = new
+                        CustomClusterRenderer(getContext(), mMap, mClusterManager);
 
-                for (int i=0; i < markersList.size(); i++) {
-                    MarkerData data = markersList.get(i);
-                    String markerDataString = gson.toJson(data);
+                mClusterManager.setRenderer(renderer);
 
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(data.latlng)
-                            .title(data.title)
-                            .snippet(markerDataString)
-                            .icon(BitmapDescriptorFactory.defaultMarker(data.color))
-                    );
+                for (MarkerData data : markersList) {
+                    mClusterManager.addItem(data);
                 }
-
+                mClusterManager.cluster();
             }
         });
-
         return root;
     }
 
