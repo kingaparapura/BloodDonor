@@ -13,21 +13,18 @@ import org.example.blooddonor.R;
 
 public class InfoWindowCustom implements GoogleMap.InfoWindowAdapter {
 
-    Context context;
     LayoutInflater inflater;
 
-    public InfoWindowCustom (Context context) {
-        this.context = context;
+    public InfoWindowCustom (LayoutInflater inflater) {
+        this.inflater = inflater;
     }
     @Override
     public View getInfoWindow(Marker marker) {
-    return null;
+        return null;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
-        inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.info_window, null);
 
@@ -37,12 +34,12 @@ public class InfoWindowCustom implements GoogleMap.InfoWindowAdapter {
         TextView subtitle = (TextView)
                 view.findViewById(R.id.hours);
 
-        Gson gson = new Gson();
-        MarkerData markerData = gson.fromJson(marker.getSnippet(),
-                MarkerData.class);
+        //Gson gson = new Gson();
+       //MarkerData markerData = gson.fromJson(marker.getSnippet(),
+               // MarkerData.class);
 
         title.setText(marker.getTitle());
-        subtitle.setText(markerData.snippet);
+        subtitle.setText(marker.getSnippet());
         return view;
     }
 }

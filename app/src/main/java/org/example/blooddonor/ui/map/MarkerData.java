@@ -29,11 +29,8 @@ public class MarkerData implements ClusterItem {
         return title;
     }
 
-    @Nullable
     @Override
-    public String getSnippet() {
-        return null;
-    }
+    public String getSnippet() { return snippet; }
 
     public float getColor(){
         return color;

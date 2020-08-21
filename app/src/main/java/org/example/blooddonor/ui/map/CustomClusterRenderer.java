@@ -27,6 +27,6 @@ public class CustomClusterRenderer extends DefaultClusterRenderer {
         final BitmapDescriptor bitmapDescriptor =
                 BitmapDescriptorFactory.defaultMarker(((MarkerData) item).getColor());
 
-        markerOptions.icon(bitmapDescriptor).snippet(item.getTitle());
+        markerOptions.icon(bitmapDescriptor).title(item.getTitle()).snippet(item.getSnippet());
     }
 }

@@ -93,11 +93,17 @@ public class MapFragment extends Fragment  {
                         CustomClusterRenderer(getContext(), mMap, mClusterManager);
 
                 mClusterManager.setRenderer(renderer);
+                //Gson gson = new Gson();
+
 
                 for (MarkerData data : markersList) {
+                   // String markerDataString = gson.toJson(data);
                     mClusterManager.addItem(data);
                 }
                 mClusterManager.cluster();
+                mClusterManager.getMarkerCollection()
+                        .setInfoWindowAdapter(new InfoWindowCustom(LayoutInflater.from(getContext())));
+                mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
             }
         });
         return root;
