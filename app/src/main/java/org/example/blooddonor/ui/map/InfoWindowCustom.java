@@ -34,10 +34,6 @@ public class InfoWindowCustom implements GoogleMap.InfoWindowAdapter {
         TextView subtitle = (TextView)
                 view.findViewById(R.id.hours);
 
-        //Gson gson = new Gson();
-       //MarkerData markerData = gson.fromJson(marker.getSnippet(),
-               // MarkerData.class);
-
         title.setText(marker.getTitle());
         subtitle.setText(marker.getSnippet());
         return view;
