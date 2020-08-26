@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.collections.MarkerManager;
+import com.google.maps.android.geometry.Bounds;
 
 import org.example.blooddonor.R;
 
@@ -63,6 +64,9 @@ public class MapFragment extends Fragment {
                 "\nwt.: 11.00 - 16.00;\nsb.: 7.00 - 12.00(wg harmonogramu)", BitmapDescriptorFactory.HUE_YELLOW));
         markersList.add(new MarkerData(new LatLng(52.226204, 21.000898),
                 "Szpital Kliniczny ul. Nowogrodzka 59", "pon. - pt.: 7.00 - 13.00",
+                BitmapDescriptorFactory.HUE_YELLOW));
+        markersList.add(new MarkerData(new LatLng(52.205354, 21.190975),
+                "Centrum Zdrowia Dziecka", "Zamknięte do odwołania!",
                 BitmapDescriptorFactory.HUE_YELLOW));
     }
 
@@ -126,7 +130,6 @@ public class MapFragment extends Fragment {
                         != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
                         Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 {
-
                     return;
                 }
                 googleMap.setMyLocationEnabled(true);
@@ -152,6 +155,15 @@ public class MapFragment extends Fragment {
                 mClusterManager.getMarkerCollection()
                         .setInfoWindowAdapter(new InfoWindowCustom(LayoutInflater.from(getContext())));
                 mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+                mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerData>() {
+                    @Override
+                    public boolean onClusterClick(Cluster<MarkerData> cluster) {
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                cluster.getPosition(), (float) Math.floor(googleMap.getCameraPosition()
+                                        .zoom + 5)), 300, null);
+                        return true;
+                    }
+                });
             }
         });
         return root;
